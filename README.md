@@ -50,9 +50,8 @@ Baseline: `--model unet` (early-fused pre, post and terrain).
 ## Usage
 ```bash
 pip install torch xarray h5netcdf scipy pytest
-# download data (needs huggingface.co access)
-hf download paulhoehn/Sen12Landslides --repo-type dataset --local-dir data --include "data_harmonized/s2/**"
-for a in data/data_harmonized/s2/*.tar.gz; do tar -xzf "$a" -C data/data_harmonized/s2 && rm "$a"; done
+# download data (needs huggingface.co and us.aws.cdn.hf.co); streams ~39 GB, keeps only the 4,988 LD patches
+python scripts/download_s2.py --out data/data_harmonized
 
 python scripts/make_splits.py                       # writes splits/loco/*.json
 python scripts/train.py --split splits/loco/loco_oceania.json --data-root data/data_harmonized --model phydg
