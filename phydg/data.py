@@ -73,6 +73,20 @@ def read_patch(path: str) -> dict:
     }
 
 
+def save_cached(path, s: dict) -> None:
+    """Composites as float16 (reflectance needs ~1e-3 precision); DEM stays float32
+    because terrain derivatives at 10 m need sub-metre elevation precision."""
+    np.savez(path, pre=s["pre"].astype(np.float16), post=s["post"].astype(np.float16),
+             dem=s["dem"].astype(np.float32), msk=s["msk"].astype(np.uint8),
+             date_known=np.array(s["date_known"]))
+
+
+def load_cached(path) -> dict:
+    with np.load(path) as z:
+        return {"pre": z["pre"].astype(np.float32), "post": z["post"].astype(np.float32),
+                "dem": z["dem"], "msk": z["msk"].astype(np.int64), "date_known": bool(z["date_known"])}
+
+
 def augment(sample: dict, rng: np.random.Generator) -> dict:
     k = int(rng.integers(4))
     flip = bool(rng.integers(2))
@@ -83,11 +97,11 @@ def augment(sample: dict, rng: np.random.Generator) -> dict:
 
 
 class Sen12LS(Dataset):
-    def __init__(self, entries: list[dict], root: str, train: bool = False, seed: int = 0):
+    def __init__(self, entries: list[dict], root: str, train: bool = False, cache: str | None = None):
         self.entries = entries
         self.root = Path(root)
         self.train = train
-        self.rng = np.random.default_rng(seed)
+        self.cache = Path(cache) if cache else None
 
     @classmethod
     def from_split(cls, split_json: str, part: str, root: str, **kw):
@@ -103,9 +117,14 @@ class Sen12LS(Dataset):
 
     def __getitem__(self, i):
         e = self.entries[i]
-        s = read_patch(str(self.root / e["s2"]))
+        cached = self.cache / f"{e['id']}.npz" if self.cache else None
+        if cached is not None and cached.exists():
+            s = load_cached(cached)
+        else:
+            s = read_patch(str(self.root / e["s2"]))
         if self.train:
-            s = augment(s, self.rng)
+            # torch's RNG is seeded per DataLoader worker; a shared numpy Generator is not
+            s = augment(s, np.random.default_rng(int(torch.randint(2**31, (1,)))))
         out = {k: torch.from_numpy(s[k]) for k in ("pre", "post", "dem", "msk")}
         out["region"] = torch.tensor(INVENTORY_INDEX[e["inventory"]])
         out["date_known"] = torch.tensor(s["date_known"])

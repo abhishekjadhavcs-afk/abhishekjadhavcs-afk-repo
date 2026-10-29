@@ -34,7 +34,9 @@ def parse_args():
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     ap.add_argument("--seed", type=int, default=42)
-    ap.add_argument("--max-batches", type=int, default=None, help="limit batches per epoch (smoke tests)")
+    ap.add_argument("--cache", default=None, help="folder of precomputed composites (scripts/build_cache.py)")
+    ap.add_argument("--batches-per-epoch", type=int, default=None, help="default: one pass over train size")
+    ap.add_argument("--max-batches", type=int, default=None, help="limit train and eval batches (smoke tests)")
     ap.add_argument("--out", default="runs")
     return ap.parse_args()
 
@@ -62,11 +64,10 @@ def main():
     run_dir = Path(args.out) / fold / tag
     run_dir.mkdir(parents=True, exist_ok=True)
 
-    train_ds = Sen12LS.from_split(args.split, "train", args.data_root, seed=args.seed)
-    val_ds = Sen12LS.from_split(args.split, "val", args.data_root)
-    test_ds = Sen12LS.from_split(args.split, "test", args.data_root)
+    train_ds, val_ds, test_ds = (Sen12LS.from_split(args.split, p, args.data_root, cache=args.cache)
+                                 for p in ("train", "val", "test"))
     sampler = RegionBalancedSampler(train_ds.regions, args.batch_size, args.regions_per_batch,
-                                    n_batches=args.max_batches, seed=args.seed)
+                                    n_batches=args.max_batches or args.batches_per_epoch, seed=args.seed)
     dl = dict(num_workers=args.workers, pin_memory=args.device.startswith("cuda"))
     train_dl = DataLoader(train_ds, batch_sampler=sampler, **dl)
     val_dl = DataLoader(val_ds, batch_size=args.batch_size, **dl)
@@ -98,14 +99,15 @@ def main():
         val = evaluate(model, val_dl, args.device, args.max_batches)["all"]
         history.append({"epoch": epoch, **logs, **{f"val_{k}": v for k, v in val.items()}})
         print(f"ep {epoch:3d} {' '.join(f'{k}={v:.4f}' for k, v in logs.items())} "
-              f"val_f1={val['f1']:.4f} val_iou={val['iou']:.4f} ({time.time() - t0:.0f}s)")
-        if val["f1"] > best:
-            best = val["f1"]
+              f"val_f1={val['f1']:.4f} val_ap={val['ap']:.4f} ({time.time() - t0:.0f}s)", flush=True)
+        # select on AP: threshold-free, so not tied to the training regions' calibration
+        if val["ap"] > best:
+            best = val["ap"]
             torch.save(model.state_dict(), run_dir / "best.pt")
 
     model.load_state_dict(torch.load(run_dir / "best.pt", map_location=args.device))
     test = evaluate(model, test_dl, args.device, args.max_batches)
-    json.dump({"args": vars(args), "best_val_f1": best, "test": test, "history": history},
+    json.dump({"args": vars(args), "best_val_ap": best, "test": test, "history": history},
               open(run_dir / "results.json", "w"), indent=1)
     print("held-out test:", json.dumps(test["all"]))
 

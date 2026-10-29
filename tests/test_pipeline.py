@@ -110,6 +110,27 @@ def test_dataset_reads_netcdf(tmp_path):
     assert float(s["pre"].max()) <= 1.0
 
 
+def test_cache_roundtrip_matches_netcdf(tmp_path):
+    from phydg.data import load_cached, read_patch, save_cached
+    entries = make_fake_dataset(tmp_path, per_inv=1)
+    s = read_patch(str(tmp_path / entries[0]["s2"]))
+    save_cached(tmp_path / "c.npz", s)
+    c = load_cached(tmp_path / "c.npz")
+    assert np.abs(c["pre"] - s["pre"]).max() < 1e-3 and np.array_equal(c["dem"], s["dem"])
+    assert np.array_equal(c["msk"], s["msk"]) and c["date_known"] == s["date_known"]
+
+
+def test_average_precision():
+    from phydg.metrics import BinaryMetrics
+    m = BinaryMetrics()
+    tgt = torch.tensor([[[1, 1, 0, 0]]])
+    m.update(torch.tensor([[[[5.0, 4.0, -4.0, -5.0]]]]), tgt, torch.tensor([0]))
+    assert abs(m.compute()["all"]["ap"] - 1.0) < 1e-9  # perfect ranking
+    m = BinaryMetrics()
+    m.update(torch.tensor([[[[-5.0, -4.0, 4.0, 5.0]]]]), tgt, torch.tensor([0]))
+    assert m.compute()["all"]["ap"] < 0.6  # inverted ranking
+
+
 def test_train_script_end_to_end(tmp_path):
     entries = make_fake_dataset(tmp_path / "data")
     split = {"train": [e for e in entries if e["inventory"] != "newzealand"][:-3],

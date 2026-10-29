@@ -53,12 +53,18 @@ pip install torch xarray h5netcdf scipy pytest
 # download data (needs huggingface.co and us.aws.cdn.hf.co); streams ~39 GB, keeps only the 4,988 LD patches
 python scripts/download_s2.py --out data/data_harmonized
 
-python scripts/make_splits.py                       # writes splits/loco/*.json
-python scripts/train.py --split splits/loco/loco_oceania.json --data-root data/data_harmonized --model phydg
-python scripts/train.py --split splits/loco/loco_oceania.json --data-root data/data_harmonized --model unet
+python scripts/build_cache.py --data-root data/data_harmonized --out data/cache   # composites, ~3.7 GB
+python scripts/make_splits.py                       # writes splits/loco/*.json (already committed)
+python scripts/train.py --split splits/loco/loco_oceania.json --data-root data/data_harmonized --cache data/cache --model phydg
+python scripts/run_grid.py                          # all folds x variants x seeds, resumable, prints summary
 python -m pytest -q tests
 ```
-Results go to `runs/<fold>/<variant>/results.json` (per-region F1, IoU, precision and recall on the landslide class).
+Results go to `runs/<fold>/<variant>/results.json`, with per-region F1, IoU, precision, recall and average precision (AP) on the landslide class. Checkpoints are selected on validation AP. AP is threshold-free, and the landslide pixel share ranges from 1% (Puerto Rico) to 14% (Hokkaido) between regions.
+
+For the full grid on a GPU, open `notebooks/run_experiments_gpu.ipynb` in Colab or Kaggle.
+
+## Data check (all 4,988 S12LS-LD S2 patches)
+All files are readable and every mask matches the official `pixel_annotated` count. 4,982 have a usable event date; the 6 without one are in kyrgyzstan1 and fall back to splitting the series in half.
 
 ## Status
 - Region labels confirmed from the official metadata (`inventory` field, and the `<region>_s2_<id>.nc` file names).
