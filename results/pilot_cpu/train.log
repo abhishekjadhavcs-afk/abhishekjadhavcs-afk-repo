@@ -1,0 +1,84 @@
+cache ready: 3.5G	data/cache
+>> /usr/bin/python3 /home/user/phydg-slide/scripts/train.py --split /home/user/phydg-slide/splits/loco/loco_oceania.json --data-root data/data_harmonized --cache data/cache --out runs_pilot --seed 42 --model unet --vrex 0 --epochs 15 --batches-per-epoch 120 --workers 3
+loco_oceania unet_vrex0_s42: train=3786 val=667 test=535 params=1.93M device=cpu
+ep   0 seg=1.5848 val_f1=0.1848 val_ap=0.1078 (271s)
+ep   1 seg=1.3905 val_f1=0.2867 val_ap=0.2313 (272s)
+ep   2 seg=1.2413 val_f1=0.3078 val_ap=0.2796 (266s)
+ep   3 seg=1.1625 val_f1=0.3165 val_ap=0.2947 (273s)
+ep   4 seg=1.1078 val_f1=0.3511 val_ap=0.2976 (272s)
+ep   5 seg=1.0799 val_f1=0.3732 val_ap=0.3370 (281s)
+ep   6 seg=1.0471 val_f1=0.3677 val_ap=0.3486 (277s)
+ep   7 seg=1.0212 val_f1=0.3989 val_ap=0.3446 (279s)
+ep   8 seg=1.0336 val_f1=0.3588 val_ap=0.3572 (261s)
+ep   9 seg=0.9786 val_f1=0.4161 val_ap=0.3794 (277s)
+ep  10 seg=0.9840 val_f1=0.4265 val_ap=0.3887 (297s)
+ep  11 seg=0.9681 val_f1=0.4202 val_ap=0.3922 (279s)
+ep  12 seg=0.9479 val_f1=0.4242 val_ap=0.4049 (294s)
+ep  13 seg=0.9447 val_f1=0.4368 val_ap=0.4154 (300s)
+ep  14 seg=0.9519 val_f1=0.4506 val_ap=0.4114 (290s)
+held-out test: {"f1": 0.24404469754286395, "iou": 0.13898115584227477, "precision": 0.21352747839371508, "recall": 0.284739495462093, "ap": 0.22469723287585722}
+>> /usr/bin/python3 /home/user/phydg-slide/scripts/train.py --split /home/user/phydg-slide/splits/loco/loco_oceania.json --data-root data/data_harmonized --cache data/cache --out runs_pilot --seed 42 --model phydg --epochs 15 --batches-per-epoch 120 --workers 3
+loco_oceania phydg_vrex1_s42: train=3786 val=667 test=535 params=2.12M device=cpu
+ep   0 seg=1.5354 prior=0.6007 val_f1=0.2922 val_ap=0.2365 (311s)
+ep   1 seg=1.2578 prior=0.4279 val_f1=0.3246 val_ap=0.3259 (315s)
+ep   2 seg=1.1571 prior=0.3050 val_f1=0.3469 val_ap=0.3239 (304s)
+ep   3 seg=1.1420 prior=0.2554 vrex=0.0393 val_f1=0.3796 val_ap=0.3396 (303s)
+ep   4 seg=1.1053 prior=0.2295 vrex=0.0505 val_f1=0.2924 val_ap=0.3023 (303s)
+ep   5 seg=1.0848 prior=0.2227 vrex=0.0393 val_f1=0.3912 val_ap=0.3743 (276s)
+ep   6 seg=1.0784 prior=0.2098 vrex=0.0495 val_f1=0.3799 val_ap=0.3550 (275s)
+ep   7 seg=1.0277 prior=0.1864 vrex=0.0397 val_f1=0.3996 val_ap=0.3994 (284s)
+ep   8 seg=1.0422 prior=0.1956 vrex=0.0451 val_f1=0.4138 val_ap=0.3936 (297s)
+ep   9 seg=0.9930 prior=0.1767 vrex=0.0402 val_f1=0.4416 val_ap=0.4227 (304s)
+ep  10 seg=1.0219 prior=0.1863 vrex=0.0487 val_f1=0.4115 val_ap=0.4148 (294s)
+ep  11 seg=0.9871 prior=0.1767 vrex=0.0394 val_f1=0.4257 val_ap=0.4239 (288s)
+ep  12 seg=0.9712 prior=0.1821 vrex=0.0421 val_f1=0.4185 val_ap=0.4250 (295s)
+ep  13 seg=0.9650 prior=0.1821 vrex=0.0419 val_f1=0.4332 val_ap=0.4294 (303s)
+ep  14 seg=0.9732 prior=0.1836 vrex=0.0400 val_f1=0.4451 val_ap=0.4307 (318s)
+held-out test: {"f1": 0.305233939428566, "iou": 0.1801038777739321, "precision": 0.3559020183021746, "recall": 0.2671946998846351, "ap": 0.282840847674379}
+>> /usr/bin/python3 /home/user/phydg-slide/scripts/train.py --split /home/user/phydg-slide/splits/loco/loco_africa.json --data-root data/data_harmonized --cache data/cache --out runs_pilot --seed 42 --model unet --vrex 0 --epochs 15 --batches-per-epoch 120 --workers 3
+loco_africa unet_vrex0_s42: train=3944 val=695 test=349 params=1.93M device=cpu
+ep   0 seg=1.5926 val_f1=0.2006 val_ap=0.1286 (306s)
+ep   1 seg=1.4343 val_f1=0.2554 val_ap=0.2001 (288s)
+ep   2 seg=1.2840 val_f1=0.2268 val_ap=0.2230 (298s)
+ep   3 seg=1.2131 val_f1=0.3137 val_ap=0.2896 (274s)
+ep   4 seg=1.1511 val_f1=0.2721 val_ap=0.2951 (280s)
+ep   5 seg=1.1253 val_f1=0.3736 val_ap=0.3243 (281s)
+ep   6 seg=1.0945 val_f1=0.3744 val_ap=0.3193 (274s)
+ep   7 seg=1.0889 val_f1=0.3783 val_ap=0.3329 (289s)
+ep   8 seg=1.0719 val_f1=0.3894 val_ap=0.3365 (263s)
+ep   9 seg=1.0443 val_f1=0.3636 val_ap=0.3649 (267s)
+ep  10 seg=1.0241 val_f1=0.3986 val_ap=0.3622 (293s)
+ep  11 seg=1.0200 val_f1=0.3852 val_ap=0.3856 (313s)
+ep  12 seg=1.0062 val_f1=0.4087 val_ap=0.3799 (295s)
+ep  13 seg=1.0005 val_f1=0.4230 val_ap=0.3849 (276s)
+ep  14 seg=0.9923 val_f1=0.4142 val_ap=0.3892 (266s)
+held-out test: {"f1": 0.3712154485387639, "iou": 0.22790948514690565, "precision": 0.23174487750791023, "recall": 0.9322993792649095, "ap": 0.45443548789092914}
+>> /usr/bin/python3 /home/user/phydg-slide/scripts/train.py --split /home/user/phydg-slide/splits/loco/loco_africa.json --data-root data/data_harmonized --cache data/cache --out runs_pilot --seed 42 --model phydg --epochs 15 --batches-per-epoch 120 --workers 3
+loco_africa phydg_vrex1_s42: train=3944 val=695 test=349 params=2.12M device=cpu
+ep   0 seg=1.5468 prior=0.6037 val_f1=0.2642 val_ap=0.2464 (296s)
+ep   1 seg=1.3140 prior=0.4423 val_f1=0.2977 val_ap=0.2684 (302s)
+ep   2 seg=1.2002 prior=0.3168 val_f1=0.2645 val_ap=0.2807 (301s)
+ep   3 seg=1.2074 prior=0.2773 vrex=0.0494 val_f1=0.2745 val_ap=0.3115 (281s)
+ep   4 seg=1.1680 prior=0.2636 vrex=0.0413 val_f1=0.3194 val_ap=0.2902 (286s)
+ep   5 seg=1.1322 prior=0.2331 vrex=0.0421 val_f1=0.3753 val_ap=0.3422 (288s)
+ep   6 seg=1.1054 prior=0.2177 vrex=0.0382 val_f1=0.3848 val_ap=0.3360 (296s)
+ep   7 seg=1.1162 prior=0.2178 vrex=0.0486 val_f1=0.3975 val_ap=0.3585 (314s)
+ep   8 seg=1.1005 prior=0.2098 vrex=0.0393 val_f1=0.3687 val_ap=0.3615 (329s)
+ep   9 seg=1.0678 prior=0.2086 vrex=0.0414 val_f1=0.3997 val_ap=0.3799 (320s)
+ep  10 seg=1.0735 prior=0.2023 vrex=0.0495 val_f1=0.3938 val_ap=0.3788 (319s)
+ep  11 seg=1.0616 prior=0.1960 vrex=0.0407 val_f1=0.4210 val_ap=0.4000 (299s)
+ep  12 seg=1.0406 prior=0.2015 vrex=0.0415 val_f1=0.4198 val_ap=0.4070 (291s)
+ep  13 seg=1.0288 prior=0.1984 vrex=0.0389 val_f1=0.4174 val_ap=0.4080 (285s)
+ep  14 seg=1.0327 prior=0.1987 vrex=0.0424 val_f1=0.4143 val_ap=0.4111 (272s)
+held-out test: {"f1": 0.43712379060258894, "iou": 0.2796918834481, "precision": 0.29440053018688667, "recall": 0.8484427225308101, "ap": 0.48138733551160445}
+
+held-out F1 (mean over available seeds)
+variant               oceania       africa     mean
+unet                    0.244        0.371    0.308
+phydg                   0.305        0.437    0.371
+
+held-out AP (mean over available seeds)
+variant               oceania       africa     mean
+unet                    0.225        0.454    0.340
+phydg                   0.283        0.481    0.382
+PILOT EXIT 0
