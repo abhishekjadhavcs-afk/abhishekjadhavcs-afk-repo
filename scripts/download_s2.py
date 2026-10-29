@@ -12,6 +12,7 @@ import json
 import shutil
 import sys
 import tarfile
+import time
 import urllib.request
 from pathlib import Path
 
@@ -30,13 +31,9 @@ out = Path(args.out) / "s2"
 out.mkdir(parents=True, exist_ok=True)
 lo, hi = (int(x) for x in args.parts.split("-"))
 
-for i in range(lo, hi + 1):
-    missing = wanted - {p.name for p in out.glob("*.nc")}
-    if not missing:
-        break
-    url = f"{BASE}/s2_part{i:02d}.tar.gz"
+def stream_part(url, missing):
     kept = 0
-    with urllib.request.urlopen(url) as resp, tarfile.open(fileobj=resp, mode="r|gz") as tar:
+    with urllib.request.urlopen(url, timeout=120) as resp, tarfile.open(fileobj=resp, mode="r|gz") as tar:
         for m in tar:
             name = Path(m.name).name
             # archives are untrusted: only regular files, written by basename only
@@ -48,6 +45,32 @@ for i in range(lo, hi + 1):
                 shutil.copyfileobj(src, f)
             tmp.rename(out / name)
             kept += 1
+    return kept
+
+
+for p in out.glob("*.part"):  # leftovers from an interrupted run
+    p.unlink()
+
+for i in range(lo, hi + 1):
+    url = f"{BASE}/s2_part{i:02d}.tar.gz"
+    for attempt in range(5):
+        missing = wanted - {p.name for p in out.glob("*.nc")}
+        if not missing:
+            break
+        try:
+            kept = stream_part(url, missing)
+            break
+        except (OSError, tarfile.TarError) as e:  # connection resets, truncated streams
+            for p in out.glob("*.part"):
+                p.unlink()
+            wait = 2 ** (attempt + 1)
+            print(f"part {i:02d}: {type(e).__name__}: {e}; retry {attempt + 1}/5 in {wait}s", flush=True)
+            time.sleep(wait)
+    else:
+        print(f"part {i:02d}: giving up after 5 attempts", flush=True)
+        continue
+    if not missing:
+        break
     have = len({p.name for p in out.glob("*.nc")} & wanted)
     print(f"part {i:02d}: kept {kept}, total {have}/{len(wanted)}", flush=True)
 
