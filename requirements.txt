@@ -1,0 +1,8 @@
+torch
+xarray
+h5netcdf
+netCDF4
+numpy
+pandas
+scipy
+pytest
