@@ -10,6 +10,7 @@ import argparse
 import json
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -68,10 +69,13 @@ def main():
     ap.add_argument("--seeds", nargs="+", type=int, default=[42, 123, 777])
     ap.add_argument("--out", default="runs")
     ap.add_argument("--summary-only", action="store_true")
+    ap.add_argument("--time-budget-hours", type=float, default=None,
+                    help="stop launching runs when the next one would not finish in time (e.g. Kaggle's 12 h limit)")
     ap.add_argument("extra", nargs=argparse.REMAINDER, help="passed to train.py after --")
     a = ap.parse_args()
     extra = a.extra[1:] if a.extra[:1] == ["--"] else a.extra
 
+    start, longest = time.time(), 0.0
     if not a.summary_only:
         for f in a.folds:
             for v in a.variants:
@@ -79,12 +83,20 @@ def main():
                     done = Path(a.out) / f"loco_{f}" / run_dir_tag(VARIANTS[v], s) / "results.json"
                     if done.exists():
                         continue
+                    elapsed = time.time() - start
+                    if a.time_budget_hours and elapsed + 1.2 * longest > a.time_budget_hours * 3600:
+                        print(f"time budget reached after {elapsed / 3600:.1f} h; stopping. "
+                              "Re-run to continue with the remaining runs.", flush=True)
+                        summarise(a.out, a.folds, a.variants, a.seeds)
+                        return
+                    t0 = time.time()
                     cmd = [sys.executable, str(ROOT / "scripts/train.py"),
                            "--split", str(ROOT / f"splits/loco/loco_{f}.json"),
                            "--data-root", a.data_root, "--cache", a.cache, "--out", a.out,
                            "--seed", str(s), *VARIANTS[v], *extra]
                     print(">>", " ".join(cmd), flush=True)
                     subprocess.run(cmd, check=True)
+                    longest = max(longest, time.time() - t0)
     summarise(a.out, a.folds, a.variants, a.seeds)
 
 

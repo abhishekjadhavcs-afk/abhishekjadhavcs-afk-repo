@@ -61,7 +61,11 @@ python -m pytest -q tests
 ```
 Results go to `runs/<fold>/<variant>/results.json`, with per-region F1, IoU, precision, recall and average precision (AP) on the landslide class. Checkpoints are selected on validation AP. AP is threshold-free, and the landslide pixel share ranges from 1% (Puerto Rico) to 14% (Hokkaido) between regions.
 
-For the full grid on a GPU, open `notebooks/run_experiments_gpu.ipynb` in Colab or Kaggle.
+For the full grid on a GPU, the recommended route is Kaggle's background commits, which keep running with the laptop closed:
+1. `notebooks/kaggle_1_prepare.ipynb`: Accelerator None, Internet On, then Save & Run All (Commit). It builds `cache.tar` once.
+2. `notebooks/kaggle_2_train.ipynb`: attach notebook 1's output, GPU on, then commit. Each commit stops before Kaggle's 12 h limit (`--time-budget-hours`). Attach the previous version's output and commit again to continue.
+
+`notebooks/run_experiments_gpu.ipynb` does the same in an interactive Colab session, which disconnects when the browser sleeps.
 
 ## Data check (all 4,988 S12LS-LD S2 patches)
 All files are readable and every mask matches the official `pixel_annotated` count. 4,982 have a usable event date; the 6 without one are in kyrgyzstan1 and fall back to splitting the series in half.
