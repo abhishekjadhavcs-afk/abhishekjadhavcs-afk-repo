@@ -50,14 +50,20 @@ def summarise(out, folds, variants, seeds):
                     vals.append(json.loads(p.read_text())["test"]["all"])
             cells.append(vals)
         rows.append((v, cells))
+    # folds that every listed variant has at least one finished run for: the only fair mean
+    common = [i for i in range(len(folds)) if all(cells[i] for _, cells in rows)]
     for metric in ("f1", "ap"):
-        print(f"\nheld-out {metric.upper()} (mean over available seeds)")
-        print(f"{'variant':16s}" + "".join(f"{f[:12]:>13s}" for f in folds) + f"{'mean':>9s}")
+        print(f"\nheld-out {metric.upper()} (mean over available seeds; n = finished seeds)")
+        print(f"{'variant':16s}" + "".join(f"{f[:12]:>13s}" for f in folds)
+              + f"{'mean(common)':>14s}")
         for v, cells in rows:
             means = [sum(c[metric] for c in vals) / len(vals) if vals else None for vals in cells]
-            got = [m for m in means if m is not None]
-            line = "".join(f"{m:13.3f}" if m is not None else f"{'-':>13s}" for m in means)
-            print(f"{v:16s}{line}{(sum(got) / len(got)) if got else float('nan'):9.3f}")
+            line = "".join(f"{m:9.3f} n={len(vals)}" if m is not None else f"{'-':>13s}"
+                           for m, vals in zip(means, cells))
+            cm = [means[i] for i in common]
+            print(f"{v:16s}{line}{(sum(cm) / len(cm)) if cm else float('nan'):14.3f}")
+    print(f"\nmean(common) uses the {len(common)} fold(s) finished by every variant: "
+          f"{[folds[i] for i in common]}")
 
 
 def main():
