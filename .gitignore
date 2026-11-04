@@ -5,3 +5,5 @@ __pycache__/
 .pytest_cache/
 runs_pilot/
 runs_pilot.log
+runs_ablate/
+runs_ablate.log

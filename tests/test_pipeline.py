@@ -131,6 +131,18 @@ def test_average_precision():
     assert m.compute()["all"]["ap"] < 0.6  # inverted ranking
 
 
+def test_f1_curve_matches_thresholded_f1():
+    sys.path.insert(0, str(ROOT / "scripts"))
+    from eval_thresholds import f1_curve
+    from phydg.metrics import BinaryMetrics
+    torch.manual_seed(0)
+    logits = torch.randn(2, 1, 32, 32) * 3
+    tgt = (torch.rand(2, 32, 32) > 0.8).long()
+    m = BinaryMetrics()
+    m.update(logits, tgt, torch.tensor([0, 1]))
+    assert abs(float(f1_curve(m.hist["all"])[500]) - m.compute()["all"]["f1"]) < 0.01
+
+
 def test_train_script_end_to_end(tmp_path):
     entries = make_fake_dataset(tmp_path / "data")
     split = {"train": [e for e in entries if e["inventory"] != "newzealand"][:-3],
