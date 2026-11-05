@@ -7,3 +7,4 @@ runs_pilot/
 runs_pilot.log
 runs_ablate/
 runs_ablate.log
+runs_v2check.log
