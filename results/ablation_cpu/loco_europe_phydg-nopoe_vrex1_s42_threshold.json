@@ -1,0 +1,10 @@
+{
+ "fold": "loco_europe",
+ "variant": "phydg-nopoe_vrex1_s42",
+ "f1@0.5": 0.25202750913448024,
+ "ap": 0.3216714142831044,
+ "val_threshold": 0.669,
+ "f1@val_threshold": 0.3040131428523038,
+ "oracle_f1(diagnostic)": 0.372253338031078,
+ "oracle_threshold": 0.875
+}

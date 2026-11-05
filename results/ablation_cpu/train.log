@@ -1,0 +1,199 @@
+>> /usr/bin/python3 /home/user/phydg-slide/scripts/train.py --split /home/user/phydg-slide/splits/loco/loco_europe.json --data-root data/data_harmonized --cache data/cache --out runs_ablate --seed 42 --model unet --vrex 0 --epochs 15 --batches-per-epoch 120 --workers 3
+loco_europe unet_vrex0_s42: train=2709 val=477 test=1802 params=1.93M device=cpu
+ep   0 seg=1.5956 val_f1=0.1801 val_ap=0.1152 (232s)
+ep   1 seg=1.4072 val_f1=0.3035 val_ap=0.2490 (189s)
+ep   2 seg=1.2692 val_f1=0.3135 val_ap=0.2548 (178s)
+ep   3 seg=1.1872 val_f1=0.3010 val_ap=0.2956 (178s)
+ep   4 seg=1.1354 val_f1=0.3379 val_ap=0.2882 (181s)
+ep   5 seg=1.1204 val_f1=0.3407 val_ap=0.3183 (172s)
+ep   6 seg=1.0718 val_f1=0.3626 val_ap=0.3190 (193s)
+ep   7 seg=1.0538 val_f1=0.3692 val_ap=0.3401 (203s)
+ep   8 seg=1.0768 val_f1=0.3929 val_ap=0.3573 (201s)
+ep   9 seg=1.0239 val_f1=0.4184 val_ap=0.3658 (193s)
+ep  10 seg=1.0131 val_f1=0.4220 val_ap=0.3870 (178s)
+ep  11 seg=1.0023 val_f1=0.4031 val_ap=0.3798 (184s)
+ep  12 seg=0.9796 val_f1=0.4265 val_ap=0.3846 (179s)
+ep  13 seg=0.9776 val_f1=0.4248 val_ap=0.4063 (172s)
+ep  14 seg=0.9701 val_f1=0.4326 val_ap=0.4012 (172s)
+held-out test: {"f1": 0.274542803904558, "iou": 0.15911307711708192, "precision": 0.17644746660273916, "recall": 0.6182650382981085, "ap": 0.253874050041768}
+>> /usr/bin/python3 /home/user/phydg-slide/scripts/train.py --split /home/user/phydg-slide/splits/loco/loco_europe.json --data-root data/data_harmonized --cache data/cache --out runs_ablate --seed 42 --model phydg --epochs 15 --batches-per-epoch 120 --workers 3
+loco_europe phydg_vrex1_s42: train=2709 val=477 test=1802 params=2.12M device=cpu
+ep   0 seg=1.5472 prior=0.6018 val_f1=0.2880 val_ap=0.2243 (196s)
+ep   1 seg=1.2869 prior=0.4336 val_f1=0.2402 val_ap=0.2545 (203s)
+ep   2 seg=1.1976 prior=0.3216 val_f1=0.3548 val_ap=0.3060 (198s)
+ep   3 seg=1.1922 prior=0.2789 vrex=0.0507 val_f1=0.3163 val_ap=0.2749 (199s)
+ep   4 seg=1.1445 prior=0.2527 vrex=0.0404 val_f1=0.3610 val_ap=0.3237 (196s)
+ep   5 seg=1.1413 prior=0.2447 vrex=0.0483 val_f1=0.3802 val_ap=0.3516 (197s)
+ep   6 seg=1.1050 prior=0.2335 vrex=0.0500 val_f1=0.3505 val_ap=0.3469 (200s)
+ep   7 seg=1.0706 prior=0.2099 vrex=0.0434 val_f1=0.3517 val_ap=0.3563 (202s)
+ep   8 seg=1.0846 prior=0.2182 vrex=0.0521 val_f1=0.4068 val_ap=0.3830 (200s)
+ep   9 seg=1.0476 prior=0.2027 vrex=0.0473 val_f1=0.4215 val_ap=0.3921 (206s)
+ep  10 seg=1.0505 prior=0.2071 vrex=0.0469 val_f1=0.4217 val_ap=0.4053 (202s)
+ep  11 seg=1.0208 prior=0.1961 vrex=0.0402 val_f1=0.4222 val_ap=0.4194 (205s)
+ep  12 seg=1.0090 prior=0.2010 vrex=0.0468 val_f1=0.4266 val_ap=0.4281 (204s)
+ep  13 seg=1.0109 prior=0.2023 vrex=0.0491 val_f1=0.4296 val_ap=0.4268 (215s)
+ep  14 seg=0.9972 prior=0.1993 vrex=0.0444 val_f1=0.4409 val_ap=0.4347 (216s)
+held-out test: {"f1": 0.23975622281002626, "iou": 0.13620626069916827, "precision": 0.14391156974325844, "recall": 0.7178262465331162, "ap": 0.30607369330915835}
+>> /usr/bin/python3 /home/user/phydg-slide/scripts/train.py --split /home/user/phydg-slide/splits/loco/loco_europe.json --data-root data/data_harmonized --cache data/cache --out runs_ablate --seed 42 --model phydg --vrex 0 --epochs 15 --batches-per-epoch 120 --workers 3
+loco_europe phydg_vrex0_s42: train=2709 val=477 test=1802 params=2.12M device=cpu
+ep   0 seg=1.5472 prior=0.6018 val_f1=0.2880 val_ap=0.2243 (200s)
+ep   1 seg=1.2869 prior=0.4336 val_f1=0.2402 val_ap=0.2545 (201s)
+ep   2 seg=1.1976 prior=0.3216 val_f1=0.3548 val_ap=0.3060 (197s)
+ep   3 seg=1.1454 prior=0.2626 val_f1=0.3235 val_ap=0.2940 (195s)
+ep   4 seg=1.1041 prior=0.2300 val_f1=0.3755 val_ap=0.3297 (199s)
+ep   5 seg=1.0993 prior=0.2219 val_f1=0.3789 val_ap=0.3630 (210s)
+ep   6 seg=1.0652 prior=0.2118 val_f1=0.3939 val_ap=0.3682 (208s)
+ep   7 seg=1.0317 prior=0.1909 val_f1=0.3755 val_ap=0.3787 (198s)
+ep   8 seg=1.0447 prior=0.2019 val_f1=0.3958 val_ap=0.3913 (201s)
+ep   9 seg=1.0047 prior=0.1873 val_f1=0.4233 val_ap=0.4089 (208s)
+ep  10 seg=1.0034 prior=0.1926 val_f1=0.4199 val_ap=0.4063 (210s)
+ep  11 seg=0.9868 prior=0.1834 val_f1=0.4254 val_ap=0.4237 (196s)
+ep  12 seg=0.9680 prior=0.1899 val_f1=0.4338 val_ap=0.4353 (205s)
+ep  13 seg=0.9621 prior=0.1913 val_f1=0.4347 val_ap=0.4353 (210s)
+ep  14 seg=0.9528 prior=0.1878 val_f1=0.4450 val_ap=0.4392 (207s)
+held-out test: {"f1": 0.2527256736948923, "iou": 0.1446399514318518, "precision": 0.15387458566069528, "recall": 0.7067536598562922, "ap": 0.2931577323383413}
+>> /usr/bin/python3 /home/user/phydg-slide/scripts/train.py --split /home/user/phydg-slide/splits/loco/loco_europe.json --data-root data/data_harmonized --cache data/cache --out runs_ablate --seed 42 --model phydg --no-style --epochs 15 --batches-per-epoch 120 --workers 3
+loco_europe phydg-nostyle_vrex1_s42: train=2709 val=477 test=1802 params=2.12M device=cpu
+ep   0 seg=1.5332 prior=0.6014 val_f1=0.2996 val_ap=0.2363 (208s)
+ep   1 seg=1.2605 prior=0.4302 val_f1=0.2390 val_ap=0.2789 (214s)
+ep   2 seg=1.1572 prior=0.3128 val_f1=0.3417 val_ap=0.3240 (202s)
+ep   3 seg=1.1373 prior=0.2604 vrex=0.0482 val_f1=0.3631 val_ap=0.3303 (209s)
+ep   4 seg=1.0871 prior=0.2319 vrex=0.0415 val_f1=0.3734 val_ap=0.3403 (212s)
+ep   5 seg=1.0758 prior=0.2273 vrex=0.0426 val_f1=0.4063 val_ap=0.3790 (205s)
+ep   6 seg=1.0391 prior=0.2176 vrex=0.0445 val_f1=0.3985 val_ap=0.3806 (199s)
+ep   7 seg=1.0141 prior=0.1980 vrex=0.0412 val_f1=0.3655 val_ap=0.3894 (203s)
+ep   8 seg=1.0380 prior=0.2108 vrex=0.0522 val_f1=0.3795 val_ap=0.3853 (202s)
+ep   9 seg=0.9817 prior=0.1958 vrex=0.0432 val_f1=0.4505 val_ap=0.4317 (207s)
+ep  10 seg=0.9756 prior=0.2001 vrex=0.0425 val_f1=0.4427 val_ap=0.4358 (199s)
+ep  11 seg=0.9626 prior=0.1904 vrex=0.0368 val_f1=0.4463 val_ap=0.4444 (223s)
+ep  12 seg=0.9461 prior=0.1967 vrex=0.0458 val_f1=0.4508 val_ap=0.4487 (213s)
+ep  13 seg=0.9413 prior=0.1981 vrex=0.0444 val_f1=0.4600 val_ap=0.4635 (207s)
+ep  14 seg=0.9321 prior=0.1951 vrex=0.0425 val_f1=0.4659 val_ap=0.4636 (209s)
+held-out test: {"f1": 0.28752663511813586, "iou": 0.16790137646197553, "precision": 0.1824470188168257, "recall": 0.6780423757565973, "ap": 0.31411843730557326}
+>> /usr/bin/python3 /home/user/phydg-slide/scripts/train.py --split /home/user/phydg-slide/splits/loco/loco_europe.json --data-root data/data_harmonized --cache data/cache --out runs_ablate --seed 42 --model phydg --no-poe --epochs 15 --batches-per-epoch 120 --workers 3
+loco_europe phydg-nopoe_vrex1_s42: train=2709 val=477 test=1802 params=2.12M device=cpu
+ep   0 seg=1.6045 prior=0.6003 val_f1=0.2861 val_ap=0.2333 (190s)
+ep   1 seg=1.3916 prior=0.4234 val_f1=0.2449 val_ap=0.2547 (190s)
+ep   2 seg=1.2736 prior=0.2892 val_f1=0.3352 val_ap=0.3054 (198s)
+ep   3 seg=1.2117 prior=0.2200 vrex=0.0373 val_f1=0.3314 val_ap=0.2944 (190s)
+ep   4 seg=1.1607 prior=0.1884 vrex=0.0364 val_f1=0.3206 val_ap=0.3055 (188s)
+ep   5 seg=1.1489 prior=0.1890 vrex=0.0419 val_f1=0.3565 val_ap=0.3372 (202s)
+ep   6 seg=1.1216 prior=0.1796 vrex=0.0495 val_f1=0.3555 val_ap=0.3455 (213s)
+ep   7 seg=1.0826 prior=0.1642 vrex=0.0408 val_f1=0.3417 val_ap=0.3321 (207s)
+ep   8 seg=1.0910 prior=0.1817 vrex=0.0496 val_f1=0.3992 val_ap=0.3790 (207s)
+ep   9 seg=1.0475 prior=0.1663 vrex=0.0439 val_f1=0.4208 val_ap=0.3934 (223s)
+ep  10 seg=1.0485 prior=0.1751 vrex=0.0437 val_f1=0.4255 val_ap=0.4066 (204s)
+ep  11 seg=1.0271 prior=0.1647 vrex=0.0410 val_f1=0.4208 val_ap=0.4112 (206s)
+ep  12 seg=1.0095 prior=0.1739 vrex=0.0450 val_f1=0.4174 val_ap=0.4220 (206s)
+ep  13 seg=1.0029 prior=0.1767 vrex=0.0452 val_f1=0.4287 val_ap=0.4264 (196s)
+ep  14 seg=0.9954 prior=0.1719 vrex=0.0423 val_f1=0.4398 val_ap=0.4301 (194s)
+held-out test: {"f1": 0.25202750913448024, "iou": 0.14418276629152624, "precision": 0.1538251910674838, "recall": 0.6969826917522536, "ap": 0.3216714142831044}
+>> /usr/bin/python3 /home/user/phydg-slide/scripts/train.py --split /home/user/phydg-slide/splits/loco/loco_east_asia.json --data-root data/data_harmonized --cache data/cache --out runs_ablate --seed 42 --model unet --vrex 0 --epochs 15 --batches-per-epoch 120 --workers 3
+loco_east_asia unet_vrex0_s42: train=3790 val=667 test=531 params=1.93M device=cpu
+ep   0 seg=1.5800 val_f1=0.1669 val_ap=0.0934 (200s)
+ep   1 seg=1.4086 val_f1=0.2447 val_ap=0.1953 (203s)
+ep   2 seg=1.2629 val_f1=0.2939 val_ap=0.2356 (195s)
+ep   3 seg=1.1773 val_f1=0.3222 val_ap=0.2720 (193s)
+ep   4 seg=1.1385 val_f1=0.3364 val_ap=0.3072 (199s)
+ep   5 seg=1.1199 val_f1=0.3244 val_ap=0.2738 (200s)
+ep   6 seg=1.0876 val_f1=0.2839 val_ap=0.3194 (203s)
+ep   7 seg=1.0783 val_f1=0.3555 val_ap=0.3027 (206s)
+ep   8 seg=1.0595 val_f1=0.3974 val_ap=0.3588 (205s)
+ep   9 seg=1.0395 val_f1=0.3987 val_ap=0.3428 (199s)
+ep  10 seg=1.0230 val_f1=0.3356 val_ap=0.3297 (204s)
+ep  11 seg=0.9942 val_f1=0.4121 val_ap=0.3869 (198s)
+ep  12 seg=0.9956 val_f1=0.3953 val_ap=0.3706 (201s)
+ep  13 seg=0.9774 val_f1=0.3942 val_ap=0.3639 (196s)
+ep  14 seg=0.9803 val_f1=0.4053 val_ap=0.3824 (188s)
+held-out test: {"f1": 0.4053420173040887, "iou": 0.2541874318522032, "precision": 0.4946207557913033, "recall": 0.3433648717244593, "ap": 0.4305582815582216}
+>> /usr/bin/python3 /home/user/phydg-slide/scripts/train.py --split /home/user/phydg-slide/splits/loco/loco_east_asia.json --data-root data/data_harmonized --cache data/cache --out runs_ablate --seed 42 --model phydg --epochs 15 --batches-per-epoch 120 --workers 3
+loco_east_asia phydg_vrex1_s42: train=3790 val=667 test=531 params=2.12M device=cpu
+ep   0 seg=1.5332 prior=0.6013 val_f1=0.2474 val_ap=0.2177 (208s)
+ep   1 seg=1.2835 prior=0.4349 val_f1=0.2482 val_ap=0.2542 (206s)
+ep   2 seg=1.1783 prior=0.3050 val_f1=0.3184 val_ap=0.2887 (208s)
+ep   3 seg=1.1762 prior=0.2564 vrex=0.0441 val_f1=0.3605 val_ap=0.3089 (206s)
+ep   4 seg=1.1531 prior=0.2281 vrex=0.0406 val_f1=0.3562 val_ap=0.3036 (218s)
+ep   5 seg=1.1291 prior=0.2163 vrex=0.0355 val_f1=0.3779 val_ap=0.3261 (213s)
+ep   6 seg=1.1061 prior=0.2002 vrex=0.0444 val_f1=0.2886 val_ap=0.3024 (224s)
+ep   7 seg=1.1103 prior=0.1924 vrex=0.0464 val_f1=0.3907 val_ap=0.3560 (217s)
+ep   8 seg=1.0825 prior=0.1857 vrex=0.0379 val_f1=0.4037 val_ap=0.3756 (218s)
+ep   9 seg=1.0714 prior=0.1818 vrex=0.0398 val_f1=0.4165 val_ap=0.3744 (214s)
+ep  10 seg=1.0542 prior=0.1772 vrex=0.0491 val_f1=0.4046 val_ap=0.3897 (214s)
+ep  11 seg=1.0281 prior=0.1700 vrex=0.0351 val_f1=0.4302 val_ap=0.3991 (211s)
+ep  12 seg=1.0308 prior=0.1668 vrex=0.0426 val_f1=0.4161 val_ap=0.4010 (205s)
+ep  13 seg=1.0237 prior=0.1707 vrex=0.0409 val_f1=0.4227 val_ap=0.4055 (203s)
+ep  14 seg=1.0233 prior=0.1696 vrex=0.0425 val_f1=0.4187 val_ap=0.4071 (213s)
+held-out test: {"f1": 0.3438171570079347, "iou": 0.20759613496949014, "precision": 0.3698819831431871, "recall": 0.321183979495885, "ap": 0.35095363173789407}
+>> /usr/bin/python3 /home/user/phydg-slide/scripts/train.py --split /home/user/phydg-slide/splits/loco/loco_east_asia.json --data-root data/data_harmonized --cache data/cache --out runs_ablate --seed 42 --model phydg --vrex 0 --epochs 15 --batches-per-epoch 120 --workers 3
+loco_east_asia phydg_vrex0_s42: train=3790 val=667 test=531 params=2.12M device=cpu
+ep   0 seg=1.5332 prior=0.6013 val_f1=0.2474 val_ap=0.2177 (205s)
+ep   1 seg=1.2835 prior=0.4349 val_f1=0.2482 val_ap=0.2542 (208s)
+ep   2 seg=1.1783 prior=0.3050 val_f1=0.3184 val_ap=0.2887 (210s)
+ep   3 seg=1.1339 prior=0.2381 val_f1=0.3751 val_ap=0.3331 (213s)
+ep   4 seg=1.1125 prior=0.2017 val_f1=0.3933 val_ap=0.3457 (216s)
+ep   5 seg=1.0942 prior=0.1914 val_f1=0.3758 val_ap=0.3264 (216s)
+ep   6 seg=1.0665 prior=0.1778 val_f1=0.2741 val_ap=0.3100 (221s)
+ep   7 seg=1.0525 prior=0.1697 val_f1=0.4215 val_ap=0.3854 (215s)
+ep   8 seg=1.0426 prior=0.1681 val_f1=0.3681 val_ap=0.3797 (203s)
+ep   9 seg=1.0170 prior=0.1660 val_f1=0.4319 val_ap=0.3990 (208s)
+ep  10 seg=1.0065 prior=0.1626 val_f1=0.4370 val_ap=0.4035 (201s)
+ep  11 seg=0.9802 prior=0.1569 val_f1=0.4441 val_ap=0.4200 (207s)
+ep  12 seg=0.9744 prior=0.1541 val_f1=0.4439 val_ap=0.4218 (213s)
+ep  13 seg=0.9727 prior=0.1589 val_f1=0.4432 val_ap=0.4198 (211s)
+ep  14 seg=0.9672 prior=0.1578 val_f1=0.4382 val_ap=0.4195 (214s)
+held-out test: {"f1": 0.3541647970792406, "iou": 0.21518849302210014, "precision": 0.3900784465825065, "recall": 0.32430661307636616, "ap": 0.38024199617510107}
+>> /usr/bin/python3 /home/user/phydg-slide/scripts/train.py --split /home/user/phydg-slide/splits/loco/loco_east_asia.json --data-root data/data_harmonized --cache data/cache --out runs_ablate --seed 42 --model phydg --no-style --epochs 15 --batches-per-epoch 120 --workers 3
+loco_east_asia phydg-nostyle_vrex1_s42: train=3790 val=667 test=531 params=2.12M device=cpu
+ep   0 seg=1.5276 prior=0.6012 val_f1=0.2757 val_ap=0.2409 (204s)
+ep   1 seg=1.2654 prior=0.4319 val_f1=0.2286 val_ap=0.2876 (203s)
+ep   2 seg=1.1450 prior=0.2985 val_f1=0.2999 val_ap=0.3195 (197s)
+ep   3 seg=1.1122 prior=0.2383 vrex=0.0363 val_f1=0.3746 val_ap=0.3226 (197s)
+ep   4 seg=1.0949 prior=0.2088 vrex=0.0399 val_f1=0.3955 val_ap=0.3503 (202s)
+ep   5 seg=1.0727 prior=0.2009 vrex=0.0376 val_f1=0.3812 val_ap=0.3453 (187s)
+ep   6 seg=1.0381 prior=0.1864 vrex=0.0389 val_f1=0.3078 val_ap=0.3202 (187s)
+ep   7 seg=1.0266 prior=0.1760 vrex=0.0408 val_f1=0.3302 val_ap=0.3517 (192s)
+ep   8 seg=1.0133 prior=0.1728 vrex=0.0360 val_f1=0.4269 val_ap=0.3973 (200s)
+ep   9 seg=0.9978 prior=0.1693 vrex=0.0358 val_f1=0.4314 val_ap=0.4165 (202s)
+ep  10 seg=0.9826 prior=0.1657 vrex=0.0446 val_f1=0.4421 val_ap=0.4187 (191s)
+ep  11 seg=0.9447 prior=0.1596 vrex=0.0346 val_f1=0.4544 val_ap=0.4434 (192s)
+ep  12 seg=0.9570 prior=0.1566 vrex=0.0390 val_f1=0.4451 val_ap=0.4432 (210s)
+ep  13 seg=0.9386 prior=0.1617 vrex=0.0356 val_f1=0.4424 val_ap=0.4502 (218s)
+ep  14 seg=0.9331 prior=0.1603 vrex=0.0378 val_f1=0.4364 val_ap=0.4498 (218s)
+held-out test: {"f1": 0.35291227765977434, "iou": 0.21426440915869813, "precision": 0.2873254017426494, "recall": 0.45729834985146167, "ap": 0.36385385289270034}
+>> /usr/bin/python3 /home/user/phydg-slide/scripts/train.py --split /home/user/phydg-slide/splits/loco/loco_east_asia.json --data-root data/data_harmonized --cache data/cache --out runs_ablate --seed 42 --model phydg --no-poe --epochs 15 --batches-per-epoch 120 --workers 3
+loco_east_asia phydg-nopoe_vrex1_s42: train=3790 val=667 test=531 params=2.12M device=cpu
+ep   0 seg=1.5885 prior=0.5994 val_f1=0.2797 val_ap=0.2300 (213s)
+ep   1 seg=1.3877 prior=0.4229 val_f1=0.2506 val_ap=0.2530 (227s)
+ep   2 seg=1.2587 prior=0.2766 val_f1=0.3344 val_ap=0.3033 (218s)
+ep   3 seg=1.2013 prior=0.2000 vrex=0.0294 val_f1=0.3361 val_ap=0.3040 (204s)
+ep   4 seg=1.1667 prior=0.1686 vrex=0.0325 val_f1=0.3632 val_ap=0.3200 (207s)
+ep   5 seg=1.1397 prior=0.1638 vrex=0.0323 val_f1=0.3784 val_ap=0.3332 (213s)
+ep   6 seg=1.1085 prior=0.1551 vrex=0.0402 val_f1=0.2803 val_ap=0.3219 (193s)
+ep   7 seg=1.1093 prior=0.1514 vrex=0.0443 val_f1=0.3853 val_ap=0.3588 (189s)
+ep   8 seg=1.0802 prior=0.1513 vrex=0.0358 val_f1=0.3841 val_ap=0.3746 (192s)
+ep   9 seg=1.0718 prior=0.1495 vrex=0.0383 val_f1=0.4137 val_ap=0.3784 (201s)
+ep  10 seg=1.0561 prior=0.1479 vrex=0.0468 val_f1=0.4083 val_ap=0.3933 (199s)
+ep  11 seg=1.0213 prior=0.1418 vrex=0.0336 val_f1=0.4293 val_ap=0.4016 (195s)
+ep  12 seg=1.0220 prior=0.1404 vrex=0.0368 val_f1=0.4178 val_ap=0.4066 (205s)
+ep  13 seg=1.0149 prior=0.1464 vrex=0.0400 val_f1=0.4238 val_ap=0.4110 (200s)
+ep  14 seg=1.0153 prior=0.1449 vrex=0.0401 val_f1=0.4166 val_ap=0.4095 (198s)
+held-out test: {"f1": 0.3436671655804823, "iou": 0.20748677949195202, "precision": 0.3519065163836142, "recall": 0.33580481147697866, "ap": 0.3547854929804092}
+
+held-out F1 (mean over available seeds; n = finished seeds)
+variant                europe    east_asia  mean(common)
+unet                0.275 n=1    0.405 n=1         0.340
+phydg               0.240 n=1    0.344 n=1         0.292
+phydg-novrex        0.253 n=1    0.354 n=1         0.303
+phydg-nostyle       0.288 n=1    0.353 n=1         0.320
+phydg-nopoe         0.252 n=1    0.344 n=1         0.298
+
+held-out AP (mean over available seeds; n = finished seeds)
+variant                europe    east_asia  mean(common)
+unet                0.254 n=1    0.431 n=1         0.342
+phydg               0.306 n=1    0.351 n=1         0.329
+phydg-novrex        0.293 n=1    0.380 n=1         0.337
+phydg-nostyle       0.314 n=1    0.364 n=1         0.339
+phydg-nopoe         0.322 n=1    0.355 n=1         0.338
+
+mean(common) uses the 2 fold(s) finished by every variant: ['europe', 'east_asia']
+ABLATION EXIT 0

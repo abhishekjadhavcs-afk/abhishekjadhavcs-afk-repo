@@ -1,0 +1,13 @@
+fold             variant                     F1@0.5 thr(val)  F1@thr     AP  oracleF1
+loco_east_asia   phydg-nopoe_vrex1_s42        0.344    0.658   0.291  0.355     0.385
+loco_east_asia   phydg-nostyle_vrex1_s42      0.353    0.702   0.330  0.364     0.354
+loco_east_asia   phydg_vrex0_s42              0.354    0.644   0.316  0.380     0.380
+loco_east_asia   phydg_vrex1_s42              0.344    0.661   0.296  0.351     0.363
+loco_east_asia   unet_vrex0_s42               0.405    0.661   0.347  0.431     0.457
+loco_europe      phydg-nopoe_vrex1_s42        0.252    0.669   0.304  0.322     0.372
+loco_europe      phydg-nostyle_vrex1_s42      0.288    0.660   0.332  0.314     0.377
+loco_europe      phydg_vrex0_s42              0.253    0.668   0.297  0.293     0.355
+loco_europe      phydg_vrex1_s42              0.240    0.673   0.294  0.306     0.363
+loco_europe      unet_vrex0_s42               0.275    0.690   0.307  0.254     0.321
+
+[exited with code 0]

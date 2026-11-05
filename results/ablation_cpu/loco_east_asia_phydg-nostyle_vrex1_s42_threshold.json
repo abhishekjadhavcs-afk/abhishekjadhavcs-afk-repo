@@ -1,0 +1,10 @@
+{
+ "fold": "loco_east_asia",
+ "variant": "phydg-nostyle_vrex1_s42",
+ "f1@0.5": 0.35291227765977434,
+ "ap": 0.36385385289270034,
+ "val_threshold": 0.702,
+ "f1@val_threshold": 0.3295613810661891,
+ "oracle_f1(diagnostic)": 0.35415676597515927,
+ "oracle_threshold": 0.408
+}
