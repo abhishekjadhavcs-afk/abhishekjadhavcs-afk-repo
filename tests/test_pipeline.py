@@ -82,8 +82,57 @@ def test_sampler_mixes_regions():
         assert len(b) == 8 and len({regions[i] for i in b}) == 4
 
 
-@pytest.mark.parametrize("name,kw", [("unet", {}), ("phydg", {}),
-                                     ("phydg", {"style": False, "ibn": False, "film": False, "poe": False})])
+@pytest.mark.parametrize("kw", [{}, {"poe": True}, {"style": True, "ibn": True}, {"change": False, "film": False}])
+def test_phydg2_equals_unet_at_initialisation(kw):
+    """Every branch enters the base through zero-initialised layers, so before training
+    PhyDG v2 must compute exactly the U-Net it is built on (poe adds the prior, so compare base_logits)."""
+    from phydg.models import PhyDGUNet, UNet
+    torch.manual_seed(0)
+    m2 = PhyDGUNet(**kw).eval()
+    if kw.get("ibn"):
+        return  # IBN changes the base's normalisation by design; only the forward pass is checked
+    unet = UNet().eval()
+    unet.load_state_dict(m2.base.state_dict())
+    pre, post = torch.rand(2, 10, 64, 64), torch.rand(2, 10, 64, 64)
+    dem = torch.rand(2, 1, 64, 64) * 800
+    with torch.no_grad():
+        a = unet(pre, post, dem)["logits"]
+        b = m2(pre, post, dem)["base_logits"]
+    assert torch.allclose(a, b, atol=1e-6)
+
+
+def test_wide_unet_matches_phydg2_capacity():
+    n = lambda m: sum(p.numel() for p in m.parameters())  # noqa: E731
+    ratio = n(build_model("unet-wide")) / n(build_model("phydg2"))
+    assert 0.97 < ratio < 1.03
+
+
+def test_run_tags_match_between_grid_and_train():
+    sys.path.insert(0, str(ROOT / "scripts"))
+    from run_grid import VARIANTS, run_dir_tag
+    tags = {v: run_dir_tag(a, 42) for v, a in VARIANTS.items()}
+    assert len(set(tags.values())) == len(tags)  # every variant gets its own folder
+    # folder names of runs already done on Kaggle / CPU must not change
+    assert tags["unet"] == "unet_vrex0_s42" and tags["phydg"] == "phydg_vrex1_s42"
+    assert tags["phydg-nostyle"] == "phydg-nostyle_vrex1_s42" and tags["phydg-novrex"] == "phydg_vrex0_s42"
+    assert tags["phydg2"] == "phydg2_vrex0_s42" and tags["phydg2+vrex"] == "phydg2_vrex1_s42"
+
+
+def test_weak_style_keeps_most_of_own_statistics():
+    torch.manual_seed(0)
+    style = SpectralStyle(p=1.0, gain_sigma=0.0, offset_sigma=0.0, mix_min=0.8)
+    pre = torch.rand(8, 10, 8, 8) * 0.1
+    pre[4:] += 0.4  # second region much brighter
+    region = torch.tensor([0] * 4 + [1] * 4)
+    a, _ = style(pre, pre.clone(), region)
+    shift = (a.mean(dim=(1, 2, 3)) - pre.mean(dim=(1, 2, 3))).abs()
+    assert shift.max() <= 0.2 * 0.4 + 0.02  # at most 20% of the way to the other region
+
+
+@pytest.mark.parametrize("name,kw", [("unet", {}), ("unet-wide", {}), ("phydg", {}),
+                                     ("phydg", {"style": False, "ibn": False, "film": False, "poe": False}),
+                                     ("phydg2", {}), ("phydg2", {"poe": True, "style": True, "ibn": True}),
+                                     ("phydg2", {"change": False, "film": False})])
 def test_models_forward_backward(name, kw):
     m = build_model(name, **kw)
     pre, post = torch.rand(4, 10, 64, 64), torch.rand(4, 10, 64, 64)

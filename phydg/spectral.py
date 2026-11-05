@@ -45,9 +45,10 @@ class SpectralStyle(nn.Module):
     """
 
     def __init__(self, p: float = 0.8, gain_sigma: float = 0.15, offset_sigma: float = 0.02,
-                 mix_alpha: float = 0.3):
+                 mix_alpha: float = 0.3, mix_min: float = 0.0):
         super().__init__()
         self.p, self.gs, self.os = p, gain_sigma, offset_sigma
+        self.mix_min = mix_min  # lam in [mix_min, 1]: at least this share of a patch's own style is kept
         self.beta = torch.distributions.Beta(mix_alpha, mix_alpha)
 
     def forward(self, pre, post, region):
@@ -68,7 +69,7 @@ class SpectralStyle(nn.Module):
         mu = both.mean(dim=(2, 3), keepdim=True)
         sd = both.std(dim=(2, 3), keepdim=True) + 1e-5
         perm = self._other_region_perm(region)
-        lam = self.beta.sample((B, 1, 1, 1)).to(dev)
+        lam = self.mix_min + (1 - self.mix_min) * self.beta.sample((B, 1, 1, 1)).to(dev)
         mu_mix = lam * mu + (1 - lam) * mu[perm]
         sd_mix = lam * sd + (1 - lam) * sd[perm]
 

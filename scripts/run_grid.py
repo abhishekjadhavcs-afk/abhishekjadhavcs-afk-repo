@@ -4,7 +4,7 @@ Skips runs whose results.json already exists, so it can be resumed on Colab/Kagg
 after a disconnect. `--summary-only` just prints the table.
 
     python scripts/run_grid.py --data-root data/data_harmonized --cache data/cache
-    python scripts/run_grid.py --variants unet phydg --seeds 42 --folds oceania africa
+    python scripts/run_grid.py --variants unet phydg2 --seeds 42 --folds oceania africa
 """
 import argparse
 import json
@@ -15,10 +15,24 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "scripts"))
 from phydg.folds import CLUSTERS  # noqa: E402
+from phydg.models import model_spec  # noqa: E402
+from train import parse_args as train_args  # noqa: E402
 
 VARIANTS = {
+    # baselines
     "unet": ["--model", "unet", "--vrex", "0"],
+    "unet-wide": ["--model", "unet-wide"],
+    # v2: physics branches on top of the U-Net (main method)
+    "phydg2": ["--model", "phydg2"],
+    "phydg2-nochange": ["--model", "phydg2", "--no-change"],
+    "phydg2-nofilm": ["--model", "phydg2", "--no-film"],
+    "phydg2+poe": ["--model", "phydg2", "--poe"],
+    "phydg2+vrex": ["--model", "phydg2", "--vrex", "1"],
+    "phydg2+style": ["--model", "phydg2", "--style"],
+    "phydg2+ibn": ["--model", "phydg2", "--ibn"],
+    # v1 (superseded; kept so earlier runs can still be summarised)
     "phydg": ["--model", "phydg"],
     "phydg-nostyle": ["--model", "phydg", "--no-style"],
     "phydg-noibn": ["--model", "phydg", "--no-ibn"],
@@ -29,13 +43,9 @@ VARIANTS = {
 
 
 def run_dir_tag(args_list, seed):
-    model = args_list[args_list.index("--model") + 1]
-    vrex = args_list[args_list.index("--vrex") + 1] if "--vrex" in args_list else "1"
-    if model == "unet":
-        tag = "unet"
-    else:
-        tag = "phydg" + "".join(f"-no{c}" for c in ("style", "ibn", "film", "poe") if f"--no-{c}" in args_list)
-    return f"{tag}_vrex{float(vrex):g}_s{seed}"
+    """Same tag train.py will use, derived through the same model_spec."""
+    a = train_args(["--split", "x", "--data-root", "x", *args_list])
+    return f"{model_spec(a)[2]}_s{seed}"
 
 
 def summarise(out, folds, variants, seeds):
@@ -71,7 +81,7 @@ def main():
     ap.add_argument("--data-root", default="data/data_harmonized")
     ap.add_argument("--cache", default="data/cache")
     ap.add_argument("--folds", nargs="+", default=list(CLUSTERS))
-    ap.add_argument("--variants", nargs="+", default=list(VARIANTS))
+    ap.add_argument("--variants", nargs="+", default=["unet", "unet-wide", "phydg2"], choices=list(VARIANTS))
     ap.add_argument("--seeds", nargs="+", type=int, default=[42, 123, 777])
     ap.add_argument("--out", default="runs")
     ap.add_argument("--summary-only", action="store_true")

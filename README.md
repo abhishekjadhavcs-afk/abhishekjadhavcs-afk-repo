@@ -32,7 +32,24 @@ The split files in `splits/loco/` use the official `splits.json` format, so the
 official repo's baselines (U-TAE, U-ConvLSTM, 3D-UNet, ConvGRU) can be trained on
 the same folds.
 
-## Model
+## Model v2 (current): `--model phydg2`, `phydg/models/phydg2.py`
+v1 (below) lost to the U-Net baseline (see `results/ablation_cpu/`), so v2 is built **on top of** the
+unchanged U-Net: the same 26-channel input `[pre, post, terrain]`, encoder and decoder. Two branches plug
+in after each of the 4 encoder blocks, before the skip connection and pooling:
+
+| Branch | Operation | Ablation flag |
+|---|---|---|
+| (A) Change encoder (post − pre, NDVI/NBR/BSI/NDWI before, after and their difference; half width) | `x ← x + Z(c)`, with Z a zero-initialised 1×1 conv | `--no-change` |
+| (B) Terrain FiLM (slope, aspect, curvature, roughness, relative elevation) | `x ← x·(1+γ) + β`, with zero-initialised heads | `--no-film` |
+| (B′) Terrain plausibility head | auxiliary loss only (weight 0.1); in the prediction only with `--poe` | `--poe` |
+| Weakened style randomisation | off by default | `--style` |
+| IBN in the first two stages | off by default | `--ibn` |
+| V-REx | off by default | `--vrex 1` |
+
+Before training, v2's output equals the U-Net's exactly (tested). `--model unet-wide` (widths 36-72-144-288,
+2.45M parameters vs 2.46M) is the capacity-matched control.
+
+## Model v1 (superseded): `--model phydg`
 Input: cloud-masked median composites before and after the event (from the
 `pre_post_dates` attribute and SCL), plus the DEM.
 

@@ -48,12 +48,12 @@ class Decoder(nn.Module):
 
 
 class UNet(nn.Module):
-    def __init__(self, widths=(32, 64, 128, 256)):
+    def __init__(self, widths=(32, 64, 128, 256), ibn_stages=0):
         super().__init__()
         cin = 10 + 10 + len(TERRAIN_CHANNELS)
         self.enc = nn.ModuleList()
-        for w in widths:
-            self.enc.append(conv_block(cin, w))
+        for i, w in enumerate(widths):
+            self.enc.append(conv_block(cin, w, norm="ibn" if i < ibn_stages else "bn"))
             cin = w
         self.pool = nn.MaxPool2d(2)
         self.dec = Decoder(widths)

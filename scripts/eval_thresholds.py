@@ -20,7 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from phydg.data import Sen12LS  # noqa: E402
 from phydg.metrics import N_BINS, BinaryMetrics  # noqa: E402
-from phydg.models import build_model  # noqa: E402
+from phydg.models import build_model, model_spec  # noqa: E402
 
 
 def f1_curve(h):
@@ -54,7 +54,7 @@ def main():
         if not ckpt.exists():
             continue
         args = json.loads(res.read_text())["args"]
-        kw = {} if args["model"] == "unet" else {c: not args[f"no_{c}"] for c in ("style", "ibn", "film", "poe")}
+        kw, _, _ = model_spec(args)
         model = build_model(args["model"], **kw).to(a.device)
         model.load_state_dict(torch.load(ckpt, map_location=a.device))
         model.eval()

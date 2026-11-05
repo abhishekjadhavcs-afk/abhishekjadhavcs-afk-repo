@@ -16,17 +16,20 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from phydg.data import RegionBalancedSampler, Sen12LS  # noqa: E402
 from phydg.losses import total_loss  # noqa: E402
 from phydg.metrics import BinaryMetrics  # noqa: E402
-from phydg.models import build_model  # noqa: E402
+from phydg.models import build_model, model_spec  # noqa: E402
 
 
-def parse_args():
+def parse_args(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--split", required=True, help="splits/loco/loco_<cluster>.json")
     ap.add_argument("--data-root", required=True, help="folder containing s2/<region>_s2_<id>.nc")
-    ap.add_argument("--model", choices=["unet", "phydg"], default="phydg")
-    for c in ("style", "ibn", "film", "poe"):
-        ap.add_argument(f"--no-{c}", action="store_true", help=f"ablate PhyDG component: {c}")
-    ap.add_argument("--vrex", type=float, default=1.0, help="V-REx weight (0 disables)")
+    ap.add_argument("--model", choices=["unet", "unet-wide", "phydg", "phydg2"], default="phydg2")
+    for c in ("style", "ibn", "film", "poe", "change"):
+        ap.add_argument(f"--no-{c}", action="store_true", help=f"remove component: {c}")
+    for c in ("poe", "style", "ibn"):
+        ap.add_argument(f"--{c}", action="store_true", help=f"phydg2 only: add optional component {c}")
+    ap.add_argument("--vrex", type=float, default=None,
+                    help="V-REx weight; default 1 for phydg (v1), 0 otherwise")
     ap.add_argument("--epochs", type=int, default=60)
     ap.add_argument("--batch-size", type=int, default=16)
     ap.add_argument("--regions-per-batch", type=int, default=4)
@@ -38,7 +41,7 @@ def parse_args():
     ap.add_argument("--batches-per-epoch", type=int, default=None, help="default: one pass over train size")
     ap.add_argument("--max-batches", type=int, default=None, help="limit train and eval batches (smoke tests)")
     ap.add_argument("--out", default="runs")
-    return ap.parse_args()
+    return ap.parse_args(argv)
 
 
 @torch.no_grad()
@@ -58,9 +61,8 @@ def main():
     args = parse_args()
     torch.manual_seed(args.seed)
     fold = Path(args.split).stem
-    tag = args.model if args.model == "unet" else "phydg" + "".join(
-        f"-no{c}" for c in ("style", "ibn", "film", "poe") if getattr(args, f"no_{c}"))
-    tag += f"_vrex{args.vrex:g}_s{args.seed}"
+    kw, vrex, tag = model_spec(args)
+    tag += f"_s{args.seed}"
     run_dir = Path(args.out) / fold / tag
     run_dir.mkdir(parents=True, exist_ok=True)
 
@@ -73,9 +75,7 @@ def main():
     val_dl = DataLoader(val_ds, batch_size=args.batch_size, **dl)
     test_dl = DataLoader(test_ds, batch_size=args.batch_size, **dl)
 
-    kw = {} if args.model == "unet" else {c: not getattr(args, f"no_{c}") for c in ("style", "ibn", "film", "poe")}
     model = build_model(args.model, **kw).to(args.device)
-    vrex = args.vrex if args.model == "phydg" else 0.0
     opt = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=1e-4)
     sched = torch.optim.lr_scheduler.OneCycleLR(opt, args.lr, total_steps=args.epochs * len(sampler))
     print(f"{fold} {tag}: train={len(train_ds)} val={len(val_ds)} test={len(test_ds)} "
